@@ -4,12 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by HoangAnh on 4/6/2016.
  */
 public class CountTimeService extends Service {
-    public static boolean isRunnung = true;
+    public static boolean isRunnung;
     private static final String NOFICATION = "com.example.hoanganh";
     private static final String CURRENT_TIME = "current_time";
     private static final String TIMER = "timer";
@@ -26,10 +27,9 @@ public class CountTimeService extends Service {
     }
 
     @Override
-    public void onStart(Intent intent, final int startId) {
-        super.onStart(intent, startId);
-
+    public int onStartCommand(Intent intent, int flags, int startId) {
         final long startingTime = intent.getExtras().getLong(CURRENT_TIME);
+        isRunnung = true;
 
         Thread triggerService = new Thread(new Runnable() {
 
@@ -37,13 +37,13 @@ public class CountTimeService extends Service {
             public void run() {
                 while (isRunnung) {
                     try {
-                        long tics = 0;
                         long currentTime = System.currentTimeMillis();
-                        tics = currentTime - startingTime;
+                        long tics = currentTime - startingTime;
                         Intent myFilteredResponse = new Intent(NOFICATION);
-                        myFilteredResponse.putExtra(TIMER, String.valueOf(tics));
+                        myFilteredResponse.putExtra(TIMER, String.valueOf(tics / 1000));
+                        Log.e("AAA", String.valueOf(tics));
                         sendBroadcast(myFilteredResponse);
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -51,6 +51,8 @@ public class CountTimeService extends Service {
             }
         });
         triggerService.start();
+
+        return START_NOT_STICKY;
     }
 
     @Override

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         long startingTime = System.currentTimeMillis();
         intent = new Intent(this, CountTimeService.class);
         intent.putExtra(CURRENT_TIME, startingTime);
-        Log.e("startingTime", String.valueOf(startingTime));
         startService(intent);
         Toast.makeText(this, "Service started...", Toast.LENGTH_SHORT).show();
     }
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         if (receiver != null)
             unregisterReceiver(receiver);
+        Log.e("AAA", "onPause");
     }
 
     @Override
@@ -65,5 +65,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (intent != null)
             stopService(intent);
+        Log.e("AAA", "onDestroy");
     }
 }
